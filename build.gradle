@@ -1,0 +1,48 @@
+plugins {
+	// declare Spring-related plugins without applying, this allows referencing them in sub-modules without
+	// specifying a version
+	id 'org.springframework.boot' version '4.0.5' apply false
+	id 'io.spring.dependency-management' version '1.1.7' apply false
+}
+
+allprojects {
+	repositories {
+		mavenCentral()
+	}
+
+	apply plugin: 'io.spring.dependency-management'
+
+	dependencyManagement {
+		imports {
+			// BOM coordinates come from Spring Boot plugin
+			mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+		}
+	}
+}
+
+
+subprojects {
+	apply plugin: 'java'
+
+	java {
+		toolchain {
+			languageVersion = JavaLanguageVersion.of(25)
+		}
+	}
+
+	dependencies {
+		implementation 'org.springframework.boot:spring-boot-starter-security'
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+
+		testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
+
+		testCompileOnly 'org.projectlombok:lombok'
+		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+		testAnnotationProcessor 'org.projectlombok:lombok'
+	}
+
+	tasks.named('test') {
+		useJUnitPlatform()
+	}
+}
