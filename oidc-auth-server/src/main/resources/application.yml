@@ -1,0 +1,35 @@
+server:
+    port: 9000
+
+credentials:
+  users:
+    - user1:
+      login: "john@mail.com"
+      password: "pass"
+      roles: "ADMIN"
+
+spring:
+  application:
+    name: oidc-auth-serve
+  security:
+    oauth2:
+      authorizationserver:
+        client:
+          oauth2-simple-client:
+            registration:
+              client-id: oauth2-simple-client
+              client-secret: secret
+              client-authentication-methods:
+                - "client_secret_basic"
+              authorization-grant-types:
+                - "authorization_code"
+                - "client_credentials"
+                - "refresh_token"
+              redirect-uris:
+                - "http://127.0.0.1:8080/login/oauth2/code/oauth2-simple-client"
+              post-logout-redirect-uris:
+                - "http://127.0.0.1:8080/logout"
+              scopes:
+                - "openid"
+                - "profile"
+            require-authorization-consent: false

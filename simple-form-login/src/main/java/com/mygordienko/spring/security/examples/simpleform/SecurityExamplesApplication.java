@@ -1,4 +1,4 @@
-package com.example.spring.security.examples.simpleform;
+package com.mygordienko.spring.security.examples.simpleform;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
