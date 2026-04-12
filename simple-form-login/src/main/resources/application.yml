@@ -4,3 +4,13 @@ server:
 spring:
   application:
     name: simple-form-login
+
+
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.web: DEBUG
+    org.springframework: DEBUG
+    org.springframework.security.web.savedrequest: DEBUG
+    org.springframework.security.web.servlet: DEBUG

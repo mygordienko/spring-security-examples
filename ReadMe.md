@@ -4,5 +4,6 @@
 * Username and password, custom login page
 * [OIDC login, no login page](oidc-simple-client/ReadMe.md)
 * [OIDC Auth Server](oidc-auth-server/ReadMe.md)
+* [LDAP login](ldap-simple-auth/ReadMe.md)
 * OAuth2 login authorization code flow
 * OAuth2 and form login
