@@ -10,7 +10,7 @@ credentials:
 
 spring:
   application:
-    name: oidc-auth-serve
+    name: oidc-auth-server
   security:
     oauth2:
       authorizationserver:
@@ -18,7 +18,7 @@ spring:
           oauth2-simple-client:
             registration:
               client-id: oauth2-simple-client
-              client-secret: secret
+              client-secret: secret2
               client-authentication-methods:
                 - "client_secret_basic"
               authorization-grant-types:

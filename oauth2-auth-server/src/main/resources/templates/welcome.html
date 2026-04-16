@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Welcome — Auth Server</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="card">
+    <h2>Welcome, <span th:text="${username}">User</span>!</h2>
+    <p>Your session has been successfully created.</p>
+
+    <div th:if="${isAdmin}" class="admin-section">
+        <h3>Client Management</h3>
+        <a th:href="@{/clients}" class="btn">Manage Clients</a>
+    </div>
+
+    <form th:action="@{/logout}" method="post" style="margin-top: 1.5rem;">
+        <button type="submit" class="btn btn-danger">Logout</button>
+    </form>
+</div>
+</body>
+</html>

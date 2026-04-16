@@ -17,7 +17,7 @@ oauth:
   clients:
     - client1:
       id: oauth2-simple-client
-      secret: secret
+      secret: secret2
       registrationId: oauth2-simple-client
       name: oauth2-simple-client
       redirectUrl: http://127.0.0.1:8080/login/oauth2/code/oauth2-simple-client

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Clients — Auth Server</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="card wide">
+    <h2>Registered Clients</h2>
+
+    <a th:href="@{/clients/register}" class="btn" style="margin-bottom: 1rem; display: inline-block;">
+        + Register New Client
+    </a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Client ID</th>
+            <th>Redirect URI</th>
+            <th>Scopes</th>
+            <th>Flows</th>
+            <th>PKCE</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="client : ${clients}">
+            <td th:text="${client.clientId}">id</td>
+            <td th:text="${client.redirectUri}">uri</td>
+            <td th:text="${client.scopes}">scopes</td>
+            <td>
+                <span th:if="${client.authorizationCode}">Auth Code</span>
+                <span th:if="${client.authorizationCode and client.clientCredentials}"> / </span>
+                <span th:if="${client.clientCredentials}">Client Creds</span>
+            </td>
+            <td th:text="${client.requirePkce} ? 'Yes' : 'No'">No</td>
+            <td>
+                <form th:action="@{/clients/delete/{id}(id=${client.clientId})}" method="post"
+                      onsubmit="return confirm('Delete client ' + this.dataset.id + '?')"
+                      th:data-id="${client.clientId}">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(clients)}">
+            <td colspan="6" style="text-align:center;">No clients registered yet.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/welcome}" class="btn" style="margin-top: 1rem; display: inline-block;">← Back</a>
+</div>
+</body>
+</html>

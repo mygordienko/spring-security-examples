@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Register Client — Auth Server</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="card">
+    <h2>Register New Client</h2>
+
+    <form th:action="@{/clients/register}" method="post" th:object="${request}">
+        <div class="form-group">
+            <label for="clientId">Client ID</label>
+            <input type="text" id="clientId" th:field="*{clientId}" required/>
+        </div>
+        <div class="form-group">
+            <label for="clientSecret">Client Secret</label>
+            <input type="text" id="clientSecret" th:field="*{clientSecret}"/>
+            <small>Leave blank for public clients (PKCE only).</small>
+        </div>
+        <div class="form-group">
+            <label for="redirectUri">Redirect URI</label>
+            <input type="text" id="redirectUri" th:field="*{redirectUri}" placeholder="https://..."/>
+        </div>
+        <div class="form-group">
+            <label for="scopes">Scopes</label>
+            <input type="text" id="scopes" th:field="*{scopes}" placeholder="openid,profile,read"/>
+            <small>Comma-separated values.</small>
+        </div>
+
+        <fieldset style="margin-bottom:1rem; border:1px solid #ccc; padding:.75rem; border-radius:4px;">
+            <legend>Grant Types</legend>
+            <label>
+                <input type="checkbox" th:field="*{authorizationCode}"/>
+                Authorization Code
+            </label><br/>
+            <label>
+                <input type="checkbox" th:field="*{clientCredentials}"/>
+                Client Credentials
+            </label>
+        </fieldset>
+
+        <div class="form-group">
+            <label>
+                <input type="checkbox" th:field="*{requirePkce}"/>
+                Require PKCE
+            </label>
+        </div>
+
+        <button type="submit" class="btn">Register</button>
+        <a th:href="@{/clients}" class="btn" style="margin-left:.5rem;">Cancel</a>
+    </form>
+</div>
+</body>
+</html>
