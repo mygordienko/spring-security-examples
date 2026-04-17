@@ -3,6 +3,11 @@ spring:
   application:
     name: auth-server
 
+  security:
+    oauth2:
+      authorizationserver:
+        issuer: http://localhost:9000
+
   datasource:
     url: jdbc:postgresql://localhost:5432/auth_server
     username: postgres

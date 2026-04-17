@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: oauth2-client
+
+  security:
+    oauth2:
+      client:
+        provider:
+          auth-server:
+            authorization-uri: http://localhost:9000/oauth2/authorize
+            token-uri: http://localhost:9000/oauth2/token
+            jwk-set-uri: http://localhost:9000/oauth2/jwks
+            user-info-uri: http://localhost:9000/userinfo
+            user-name-attribute: sub
+        registration:
+          pkce-client:
+            provider: auth-server
+            client-id: pkce-client
+            client-secret: secret
+            client-authentication-method: client_secret_basic
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/login/oauth2/code/{registrationId}
+            scope:
+              - openid
+              - profile
+
+app:
+  resource-server:
+    base-url: http://localhost:9001
+
+logging:
+  level:
+    '[org.springframework.security]': TRACE

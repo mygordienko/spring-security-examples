@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside th:fragment="sidebar(activePage, hasHrRole, hasManagerRole)" class="sidebar">
+    <div class="brand">Workspace</div>
+    <nav class="nav-links">
+        <a th:href="@{/}" th:classappend="${activePage == 'home'} ? ' active' : ''">Home</a>
+        <a th:if="${hasHrRole}" th:href="@{/interviews}" th:classappend="${activePage == 'interviews'} ? ' active' : ''">Interviews</a>
+        <a th:if="${hasManagerRole}" th:href="@{/demands}" th:classappend="${activePage == 'demands'} ? ' active' : ''">Demands</a>
+    </nav>
+</aside>
+</body>
+</html>

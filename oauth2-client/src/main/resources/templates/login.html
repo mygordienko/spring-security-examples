@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth2 Client Login</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="login-shell">
+<main class="login-card">
+    <p class="eyebrow">OAuth2 Client</p>
+    <h1>Interview and Demand Workspace</h1>
+    <p class="lead">Sign in through the authorization server to open the role-specific workspace.</p>
+    <a class="primary-button" th:href="@{/oauth2/authorization/pkce-client}">Login via OAuth2 Server</a>
+    <p class="status" th:if="${param.logout}">Session terminated on the client.</p>
+</main>
+<script th:if="${param.error}">
+    alert('Authentication failed. Please try again.');
+</script>
+</body>
+</html>

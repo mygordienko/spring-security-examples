@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Workspace')}"></head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/sidebar :: sidebar(${activePage}, ${hasHrRole}, ${hasManagerRole})}"></aside>
+    <div class="app-main">
+        <header th:replace="~{fragments/header :: header(${username})}"></header>
+        <main class="content-panel">
+            <p class="eyebrow">Dashboard</p>
+            <h1>Welcome, <span th:text="${username}">user</span></h1>
+            <p class="lead">Choose a section from the sidebar to open the data you are allowed to review.</p>
+        </main>
+    </div>
+</div>
+</body>
+</html>

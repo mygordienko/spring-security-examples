@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: oauth2-resource-server
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/oauth2_resource_server
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  sql:
+    init:
+      mode: always
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000
+
+  jackson:
+    datatype:
+      datetime:
+        WRITE_DATES_AS_TIMESTAMPS: false
+
+server:
+  port: 9001

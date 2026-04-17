@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Interviews')}"></head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/sidebar :: sidebar(${activePage}, ${hasHrRole}, ${hasManagerRole})}"></aside>
+    <div class="app-main">
+        <header th:replace="~{fragments/header :: header(${username})}"></header>
+        <main class="content-panel">
+            <div class="page-top">
+                <div>
+                    <p class="eyebrow">HR</p>
+                    <h1>Interviews</h1>
+                </div>
+                <div class="pager">
+                    <button type="button" id="interview-prev">Previous</button>
+                    <span id="interview-page-info">Loading...</span>
+                    <button type="button" id="interview-next">Next</button>
+                </div>
+            </div>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Manager</th>
+                    <th>Applicant</th>
+                    <th>Result</th>
+                </tr>
+                </thead>
+                <tbody id="interview-body">
+                <tr><td colspan="4">Loading...</td></tr>
+                </tbody>
+            </table>
+        </main>
+    </div>
+</div>
+<script>
+    const interviewState = { offset: 0, limit: 10 };
+
+    async function loadInterviews() {
+        const response = await fetch(`/api/v1/interviews?offset=${interviewState.offset}&limit=${interviewState.limit}`);
+        const page = await response.json();
+        const tbody = document.getElementById('interview-body');
+        const pageInfo = document.getElementById('interview-page-info');
+        const prev = document.getElementById('interview-prev');
+        const next = document.getElementById('interview-next');
+
+        if (!response.ok) {
+            throw new Error('Failed to load interviews');
+        }
+
+        if (!page.items.length) {
+            tbody.innerHTML = '<tr><td colspan="4">No interviews found.</td></tr>';
+        } else {
+            tbody.innerHTML = page.items.map(item => `
+                <tr>
+                    <td>${item.timestamp}</td>
+                    <td>${item.manager}</td>
+                    <td>${item.applicant}</td>
+                    <td><span class="tag">${item.result}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        const from = page.total === 0 ? 0 : page.offset + 1;
+        const to = Math.min(page.offset + page.limit, page.total);
+        pageInfo.textContent = `${from}-${to} of ${page.total}`;
+        prev.disabled = page.offset === 0;
+        next.disabled = page.offset + page.limit >= page.total;
+    }
+
+    document.getElementById('interview-prev').addEventListener('click', () => {
+        interviewState.offset = Math.max(0, interviewState.offset - interviewState.limit);
+        loadInterviews();
+    });
+
+    document.getElementById('interview-next').addEventListener('click', () => {
+        interviewState.offset += interviewState.limit;
+        loadInterviews();
+    });
+
+    loadInterviews().catch(() => {
+        document.getElementById('interview-body').innerHTML =
+            '<tr><td colspan="4">Failed to load interviews.</td></tr>';
+        document.getElementById('interview-page-info').textContent = 'Unavailable';
+    });
+</script>
+</body>
+</html>

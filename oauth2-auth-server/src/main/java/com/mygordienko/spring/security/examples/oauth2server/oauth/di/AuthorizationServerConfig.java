@@ -14,6 +14,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -72,15 +73,15 @@ public class AuthorizationServerConfig {
     }
 
     @Bean
-    public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
+    public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder) {
         var repository = new JdbcRegisteredClientRepository(jdbcTemplate);
 
         // Seed well-known clients if not already present
         seedClient(repository,
                 RegisteredClient.withId(UUID.randomUUID().toString())
                         .clientId("pkce-client")
-                        .clientSecret("{noop}secret")
-                        .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
+                        .clientSecret(passwordEncoder.encode("secret"))
+                        .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                         .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                         .redirectUri("http://127.0.0.1:8080/login/oauth2/code/pkce-client")
@@ -99,7 +100,7 @@ public class AuthorizationServerConfig {
         seedClient(repository,
                 RegisteredClient.withId(UUID.randomUUID().toString())
                         .clientId("cc-client")
-                        .clientSecret("{noop}cc-secret")
+                        .clientSecret(passwordEncoder.encode("cc-secret"))
                         .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                         .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                         .scope("read")

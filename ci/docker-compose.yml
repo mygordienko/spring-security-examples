@@ -1,0 +1,85 @@
+services:
+  postgres:
+    image: postgres:17.4
+    container_name: oauth2-postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - oauth2-network
+
+  oauth2-auth-server:
+    image: oauth2-auth-server
+    container_name: oauth2-auth-server
+    environment:
+      SERVER_PORT: 9000
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth_server
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_SECURITY_OAUTH2_AUTHORIZATIONSERVER_ISSUER: http://oauth2-auth-server:9000
+    ports:
+      - "9000:9000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - oauth2-network
+
+  oauth2-resource-server:
+    image: oauth2-resource-server
+    container_name: oauth2-resource-server
+    environment:
+      SERVER_PORT: 9001
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/oauth2_resource_server
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://oauth2-auth-server:9000
+    ports:
+      - "9001:9001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      oauth2-auth-server:
+        condition: service_started
+    networks:
+      - oauth2-network
+
+  oauth2-client:
+    image: oauth2-client
+    container_name: oauth2-client
+    environment:
+      SERVER_PORT: 8080
+      APP_RESOURCE_SERVER_BASE_URL: http://oauth2-resource-server:9001
+      SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_AUTH_SERVER_AUTHORIZATION_URI: http://auth.local:9000/oauth2/authorize
+      SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_AUTH_SERVER_TOKEN_URI: http://oauth2-auth-server:9000/oauth2/token
+      SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_AUTH_SERVER_JWK_SET_URI: http://oauth2-auth-server:9000/oauth2/jwks
+      SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_AUTH_SERVER_USER_INFO_URI: http://oauth2-auth-server:9000/userinfo
+      SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_AUTH_SERVER_USER_NAME_ATTRIBUTE: sub
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_PKCE_CLIENT_CLIENT_ID: pkce-client
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_PKCE_CLIENT_CLIENT_SECRET: secret
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_PKCE_CLIENT_CLIENT_AUTHENTICATION_METHOD: client_secret_basic
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_PKCE_CLIENT_AUTHORIZATION_GRANT_TYPE: authorization_code
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_PKCE_CLIENT_REDIRECT_URI: http://127.0.0.1:8080/login/oauth2/code/{registrationId}
+    ports:
+      - "8080:8080"
+    depends_on:
+      oauth2-auth-server:
+        condition: service_started
+      oauth2-resource-server:
+        condition: service_started
+    networks:
+      - oauth2-network
+
+networks:
+  oauth2-network:
+    name: oauth2-network
