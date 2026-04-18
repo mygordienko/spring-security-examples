@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -39,7 +40,6 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -73,7 +73,11 @@ public class AuthorizationServerConfig {
     }
 
     @Bean
-    public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder) {
+    public RegisteredClientRepository registeredClientRepository(
+            JdbcTemplate jdbcTemplate,
+            PasswordEncoder passwordEncoder,
+            TokenPolicyProperties tokenPolicyProperties
+    ) {
         var repository = new JdbcRegisteredClientRepository(jdbcTemplate);
 
         // Seed well-known clients if not already present
@@ -92,9 +96,7 @@ public class AuthorizationServerConfig {
                                 .requireProofKey(true)
                                 .requireAuthorizationConsent(false)
                                 .build())
-                        .tokenSettings(TokenSettings.builder()
-                                .accessTokenTimeToLive(Duration.ofHours(1))
-                                .build())
+                        .tokenSettings(tokenSettings(tokenPolicyProperties, true))
                         .build());
 
         seedClient(repository,
@@ -105,9 +107,7 @@ public class AuthorizationServerConfig {
                         .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                         .scope("read")
                         .scope("write")
-                        .tokenSettings(TokenSettings.builder()
-                                .accessTokenTimeToLive(Duration.ofMinutes(30))
-                                .build())
+                        .tokenSettings(tokenSettings(tokenPolicyProperties, false))
                         .build());
 
         return repository;
@@ -178,5 +178,16 @@ public class AuthorizationServerConfig {
         if (repo.findByClientId(client.getClientId()) == null) {
             repo.save(client);
         }
+    }
+
+    private TokenSettings tokenSettings(TokenPolicyProperties tokenPolicyProperties, boolean issueRefreshTokens) {
+        TokenSettings.Builder builder = TokenSettings.builder()
+                .accessTokenTimeToLive(tokenPolicyProperties.accessTtl());
+
+        if (issueRefreshTokens) {
+            builder.refreshTokenTimeToLive(tokenPolicyProperties.refreshTtl());
+        }
+
+        return builder.build();
     }
 }

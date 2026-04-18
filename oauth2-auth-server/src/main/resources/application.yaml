@@ -28,3 +28,8 @@ spring:
 
 server:
   port: 9000
+
+app:
+  token:
+    access-ttl: 2m
+    refresh-ttl: 10d

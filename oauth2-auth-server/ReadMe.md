@@ -13,6 +13,7 @@ Based on Spring Authorization Server
   * available only to admins
   * PostgreSQL storage for clients data
 * JWT access tokens
+* Refresh token, ttl is configurable via application.yml 
 
 ## Notes
 
