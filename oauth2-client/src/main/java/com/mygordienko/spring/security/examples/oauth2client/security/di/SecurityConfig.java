@@ -1,9 +1,5 @@
 package com.mygordienko.spring.security.examples.oauth2client.security.di;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -13,16 +9,20 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.*;
 
 @Configuration
 @EnableMethodSecurity
@@ -83,12 +83,27 @@ public class SecurityConfig {
             OAuth2AuthorizedClientRepository authorizedClientRepository
     ) {
         OAuth2AuthorizedClientProvider authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
+                .authorizationCode()
                 .refreshToken()
                 .build();
 
         DefaultOAuth2AuthorizedClientManager manager =
                 new DefaultOAuth2AuthorizedClientManager(clientRegistrationRepository, authorizedClientRepository);
         manager.setAuthorizedClientProvider(authorizedClientProvider);
+        // NOTE: Spring does refresh access token automatically when it expires (using refresh token).
+        //  Spring DOES NOT automatically invalidate user's session when refresh token expires.
+        //  Refresh token does not have (and does not have to) expiration timestamp, so there is no way for
+        //  Spring to proactively send user to re-login. Spring has to try to refresh access token and catch an exception
+        //  Here we use error handler to lookup current request and invalidate session explicitly.
+        manager.setAuthorizationFailureHandler((authorizationException, principal, attributes) -> {
+            Optional.ofNullable(((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()))
+                    .map(servletRequestAttributes -> servletRequestAttributes.getRequest())
+                    .map(httpServletRequest -> httpServletRequest.getSession())
+                    .ifPresent(httpSession -> {
+                        System.out.println("Invalidating session: " + httpSession.getId());
+                        httpSession.invalidate();
+                    });
+        });
         return manager;
     }
 }

@@ -67,3 +67,9 @@ Client Web application (BFF) that authorize users with OAuth2 Authorization Serv
     **NOTE:** Spring convention over "re-authorization" is that if the access_token is not expired - return the same
         authorized client, so even if it looks like authorization on each request, under the hood it calls OAuth2 server
         only when access_token is expired.
+
+* Spring does refresh access token automatically when it expires (using refresh token). Spring DOES NOT 
+  automatically invalidate user's session when refresh token expires. Refresh token does not have 
+  (and does not have to) expiration timestamp, so there is no way for Spring to proactively send user to re-login. 
+  Spring has to try to refresh access token and catch an exception. And that is our (developer's) responsibility to
+  handle that exception and invalidate session.
