@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: simple-ott-login
+
+
+auth:
+  users:
+    - email: "john@mail.com"
+      password: "pass"
+      roles:
+        - ADMIN
+        - USER
+
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.web: DEBUG
+    org.springframework: DEBUG
+    org.springframework.security.web.savedrequest: DEBUG
+    org.springframework.security.web.servlet: DEBUG
