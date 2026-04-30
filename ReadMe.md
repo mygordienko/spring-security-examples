@@ -9,3 +9,6 @@
   * [client](oauth2-client/ReadMe.md)
   * [auth server](oauth2-auth-server/ReadMe.md)
   * [resource server](oauth2-resource-server/ReadMe.md)
+* OTT (One-Time Token) login
+* Passkey login
+* Multi-factor login (password + ott)
