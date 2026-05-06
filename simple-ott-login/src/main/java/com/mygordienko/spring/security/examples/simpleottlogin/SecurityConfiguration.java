@@ -12,9 +12,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.ott.GenerateOneTimeTokenRequest;
 import org.springframework.security.authentication.ott.OneTimeToken;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authorization.EnableMultiFactorAuthentication;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.authority.FactorGrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,6 +38,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
+@EnableMultiFactorAuthentication(authorities = {
+  FactorGrantedAuthority.PASSWORD_AUTHORITY,
+  FactorGrantedAuthority.OTT_AUTHORITY
+})
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled=true)
 public class SecurityConfiguration {
@@ -135,7 +141,7 @@ public class SecurityConfiguration {
     @Override
     public GenerateOneTimeTokenRequest resolve(HttpServletRequest request) {
       GenerateOneTimeTokenRequest originTokenRequest = delegate.resolve(request);
-      return new GenerateOneTimeTokenRequest(originTokenRequest.getUsername(), Duration.ofMinutes(1));
+      return new GenerateOneTimeTokenRequest(originTokenRequest.getUsername(), Duration.ofMinutes(2));
     }
   
     
