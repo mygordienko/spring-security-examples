@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin panel</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>This is admin panel</h1>
+<h1 th:text="'Welcome, ' + ${username} + '!'">Welcome</h1>
+
+<div th:if="${actionExecuted}">ACTION_EXECUTED</div>
+
+<form th:action="@{/adminpanel}", method="post">
+    <button type="submit">Execute important action</button>
+</form>
+
+</body>
+</html>

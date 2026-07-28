@@ -10,5 +10,4 @@
   * [auth server](oauth2-auth-server/ReadMe.md)
   * [resource server](oauth2-resource-server/ReadMe.md)
 * [OTT (One-Time Token) login](simple-ott-login/ReadMe.md)
-* Passkey login
-* Multi-factor login (password + ott)
+* [MFA on specific endpoint](mfa-specific-endpoint/ReadMe.md)

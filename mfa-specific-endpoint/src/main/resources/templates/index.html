@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <head>
+    <title>Welcom</title>
+    <meta charset="UTF-8">
+  </head>
+  <body>
+    <h1 th:text="'Welcome, ' + ${username} + '!'">Welcome</h1>
+
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+      <a th:href="@{/adminpanel}">Admin Panel</a>
+    </div>
+
+    <form th:action="@{/logout}", method="post">
+      <button type="submit">Logout</button>
+    </form>
+  </body>
+</html>
