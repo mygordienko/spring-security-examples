@@ -1,0 +1,20 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: jwt-auth
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.web: DEBUG
+    org.springframework: DEBUG
+    org.springframework.security.web.savedrequest: DEBUG
+    org.springframework.security.web.servlet: DEBUG
+
+springdoc:
+  swagger-ui:
+    path: "/api-ui/index.html"
+  api-docs:
+    path: "/api-docs"

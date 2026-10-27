@@ -11,3 +11,4 @@
   * [resource server](oauth2-resource-server/ReadMe.md)
 * [OTT (One-Time Token) login](simple-ott-login/ReadMe.md)
 * [MFA on specific endpoint](mfa-specific-endpoint/ReadMe.md)
+* [JWT Authentication](jwt-auth/ReadMe.md)
