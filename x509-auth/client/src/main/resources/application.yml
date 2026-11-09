@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: x509-client
+  ssl:
+    bundle:
+      jks:
+        client-bundle:
+          key:
+            alias: "client"
+          keystore:
+            location: "E:/temp/1/client-a.p12"
+            password: "changeit"
+            type: "PKCS12"
+          truststore:
+            location: "E:/temp/1/client-truststore.p12"
+            password: "changeit"
+            type: "PKCS12"

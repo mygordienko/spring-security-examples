@@ -12,3 +12,4 @@
 * [OTT (One-Time Token) login](simple-ott-login/ReadMe.md)
 * [MFA on specific endpoint](mfa-specific-endpoint/ReadMe.md)
 * [JWT Authentication](jwt-auth/ReadMe.md)
+* [X509 Authentication](x509-auth/ReadMe.md)
