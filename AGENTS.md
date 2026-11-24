@@ -24,8 +24,8 @@ Gradle is used as a build system
 For non-trivial tasks, act as an orchestrator rather than doing everything in the main session, 
 use the following workflow with subagents:
 
-* First use scout to survey the codebase and identify relevant files, entry points, and risks.
-* Then ask oracle to review the scout's findings and challenge assumptions.
-* Have planner produce a specific implementation plan based on the above.
-* Then have worker implement according to the plan.
-* Finally, use reviewer for a read-only review, then report back to the user.
+* First use "scout" sub-agent to survey the codebase and identify relevant files, entry points, and risks.
+* Then ask "oracle" sub-agent to review the scout's findings and challenge assumptions.
+* Produce a specific implementation plan based on the above.
+* Then have "worker" sub-agent implement according to the plan.
+* Finally, use "reviewer" sub-agent for a read-only review, then report back to the user.
