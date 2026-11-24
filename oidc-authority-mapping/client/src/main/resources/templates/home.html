@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>OIDC login with local authority mapping</title>
+</head>
+<body>
+<h1>OIDC login with local authority mapping</h1>
+
+<div th:if="${subject == null}">
+    <p>You are not authenticated.</p>
+    <p><a th:href="@{/login}">Log in</a></p>
+</div>
+
+<div th:if="${subject != null}">
+    <p>OIDC subject: <strong th:text="${subject}">userA</strong></p>
+    <p>Local authorities:
+        <span th:each="authority, iteration : ${authorities}"
+              th:text="${authority} + ${iteration.last ? '' : ', '}">ROLE_USER</span>
+    </p>
+    <ul>
+        <li><a th:href="@{/user}">/user</a> - requires <code>ROLE_USER</code></li>
+        <li><a th:href="@{/restricted}">/restricted</a> - requires <code>ROLE_ADMIN</code></li>
+    </ul>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+</body>
+</html>

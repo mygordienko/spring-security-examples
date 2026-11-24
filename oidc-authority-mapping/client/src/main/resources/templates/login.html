@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<h1>Login</h1>
+
+<p>
+    This application has no login form of its own. It delegates authentication to the OIDC provider and
+    looks up the local account (and its authorities) by the returned OIDC subject afterwards.
+</p>
+
+<p th:if="${param.error}">
+    <strong>Login failed: the authenticated OIDC subject has no local account in this application.</strong>
+</p>
+
+<p><a th:href="@{/oauth2/authorization/authority-mapping-client}">Login via OIDC provider</a></p>
+<p><a th:href="@{/}">Back to home</a></p>
+</body>
+</html>

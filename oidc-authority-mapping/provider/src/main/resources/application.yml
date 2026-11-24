@@ -1,0 +1,33 @@
+server:
+  port: 9100
+
+spring:
+  application:
+    name: oidc-authority-mapping-provider
+  security:
+    oauth2:
+      authorizationserver:
+        client:
+          authority-mapping-client:
+            registration:
+              client-id: authority-mapping-client
+              client-secret: secret
+              client-authentication-methods:
+                - client_secret_basic
+              authorization-grant-types:
+                - authorization_code
+              redirect-uris:
+                - http://127.0.0.1:8082/login/oauth2/code/authority-mapping-client
+              scopes:
+                - openid
+                - profile
+            require-authorization-consent: false
+            # This example requires PKCE; the client sends code_challenge parameters (see the client module)
+            require-proof-key: true
+
+credentials:
+  users:
+    - login: userA
+      password: pass
+    - login: userB
+      password: pass

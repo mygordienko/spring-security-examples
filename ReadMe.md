@@ -13,3 +13,4 @@
 * [MFA on specific endpoint](mfa-specific-endpoint/ReadMe.md)
 * [JWT Authentication](jwt-auth/ReadMe.md)
 * [X509 Authentication](x509-auth/ReadMe.md)
+* [OIDC login with local authority mapping](oidc-authority-mapping/ReadMe.md)

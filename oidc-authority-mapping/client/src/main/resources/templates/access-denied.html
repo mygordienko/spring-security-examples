@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Access denied</title>
+</head>
+<body>
+<h1>Access denied</h1>
+
+<p>
+    You are authenticated, but your local authorities do not allow access to that page.
+    The restricted page requires <code>ROLE_ADMIN</code>.
+</p>
+
+<p><a th:href="@{/}">Back to home</a></p>
+</body>
+</html>
